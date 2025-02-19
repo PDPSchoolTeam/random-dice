@@ -1,0 +1,5 @@
+if update.new_chat_member.status in ["member", "administrator", "creator"]:
+    #     await bot.send_message(
+    #         update.chat.id,
+    #         f"Xush kelibsiz, {update.from_user.full_name}! 🎉"  # noqa
+    #     )

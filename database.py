@@ -23,7 +23,7 @@ class Database:
         with self.connection:
             return self.cursor.execute("INSERT INTO users (user_id,full_name) VALUES (?,?)", (user_id, full_name))
 
-    def get_all(self):
+    def all(self):
         with self.connection:
             return self.cursor.execute("SELECT user_id, full_name FROM users").fetchall()
 
