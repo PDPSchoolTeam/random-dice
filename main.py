@@ -47,7 +47,14 @@ async def user_joined(update: ChatMemberUpdated, bot: Bot):
                                    text=f"Xush kelibsiz, {update.from_user.full_name}! 🎉")  # noqa
 
 
+async def permission_user(message: Message):
+    if '@' in message.text or message.text.startswith('https://'):
+        await message.delete()
+        await message.answer(f"⚠️ Iltimos {message.from_user.full_name} reklama tarqatmang!")  # noqa
+
+
 dp.chat_member.register(user_joined)
+dp.message.register(permission_user)
 
 
 async def main():
