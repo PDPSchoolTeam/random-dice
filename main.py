@@ -1,6 +1,8 @@
 import asyncio
 import logging
 import random
+from itertools import count
+
 from aiogram import Bot, Dispatcher
 from aiogram.enums.dice_emoji import DiceEmoji
 from aiogram.filters.command import Command
@@ -10,8 +12,10 @@ from database import Database
 
 BOT_TOKEN = "8017197747:AAGWgdKyPq56Opk_BenpgNursjwGwHmJn_k"
 CHAT_ID = "-1002237491983"
+bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
 db = Database("users.db")
+
 # emoji list
 EMOJI = [
     DiceEmoji.BOWLING, DiceEmoji.BASKETBALL, DiceEmoji.FOOTBALL,
@@ -47,19 +51,61 @@ async def user_joined(update: ChatMemberUpdated, bot: Bot):
                                    text=f"Xush kelibsiz, {update.from_user.full_name}! 🎉")  # noqa
 
 
-async def permission_user(message: Message):
-    if '@' in message.text or message.text.startswith('https://'):
+# count = {}
+#
+#
+# async def permission_user(message: Message):
+#     user_id = message.from_user.id
+#
+#     if '@' in message.text or message.text.startswith('https://'):
+#         await message.delete()
+#         await message.answer(f"⚠️ Iltimos {message.from_user.full_name} reklama tarqatmang!")  # noqa
+#
+#         count[user_id] = count.get(user_id, 0) + 1
+#
+#         if count[user_id] == 2:
+#             await message.answer("❌ siz 2 marta reklama tashladingiz. 3-da Guruhdan chiqarilasiz!")  # noqa
+#         if count[user_id] == 3:
+#             try:
+#                 await message.bot.ban_chat_member(chat_id=message.chat.id, user_id=user_id)
+#                 await message.bot.unban_chat_member(chat_id=message.chat.id, user_id=user_id)
+#             except Exception as e:
+#                 print(f"⚠️ foydalanuvchini chiqarishda xatolik: {e}")  # noqa
+#
+#         print(count)
+
+
+count_msg = {}
+
+
+async def permission_msg(message: Message):
+    user_id = message.from_user.id
+
+    if 'j' in message.text or message.text.startswith('a'):  # noqa
         await message.delete()
-        await message.answer(f"⚠️ Iltimos {message.from_user.full_name} reklama tarqatmang!")  # noqa
+        await message.answer(f"⚠️ Iltimos {message.from_user.full_name} yomon so'z tarqatmang!")  # noqa
+
+        count_msg[user_id] = count_msg.get(user_id, 0) + 1
+
+        if count_msg[user_id] == 2:
+            await message.answer("❌ siz 2 marta yomon so'z ishlatdingiz. 3-da Guruhdan chiqarilasiz!")  # noqa
+        if count_msg[user_id] == 3:
+            try:
+                await message.bot.ban_chat_member(chat_id=message.chat.id, user_id=user_id)
+                await message.bot.unban_chat_member(chat_id=message.chat.id, user_id=user_id)
+            except Exception as e:
+                print(f"⚠️ foydalanuvchini chiqarishda xatolik: {e}")  # noqa
+
+        print(count_msg)
 
 
 dp.chat_member.register(user_joined)
-dp.message.register(permission_user)
+# dp.message.register(permission_user)
+dp.message.register(permission_msg)
 
 
 async def main():
     """ Asosiy funksiya """  # noqa
-    bot = Bot(token=BOT_TOKEN)
     try:
         await dp.start_polling(bot)
     finally:
